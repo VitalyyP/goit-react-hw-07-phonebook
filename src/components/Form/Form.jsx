@@ -1,26 +1,23 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import s from './Form.module.css';
-import { addContactAction } from '../../redux/actions';
+import { useFetchContactsQuery, useAddContactMutation } from '../../redux/slice';
+import LoaderDots from '../Loader';
 
 export default function Form() {
+  const [addContactToBase, { isLoading }] = useAddContactMutation();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const { data } = useFetchContactsQuery();
 
-  const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.items);
+  // console.log(isLoading);
 
-  const addContact = data => {
-    if (contacts.some(contact => contact.name.toLowerCase() === data.name.toLowerCase())) {
-      alert(`You have already had ${data.name} in your contacts`);
+  const addContact = obj => {
+    if (data.some(contact => contact.name.toLowerCase() === obj.name.toLowerCase())) {
+      alert(`You have already had ${obj.name} in your contacts`);
       return;
     }
-    const contact = {
-      id: Date.now(),
-      name: data.name,
-      number: data.number,
-    };
-    dispatch(addContactAction(contact));
+
+    addContactToBase(obj);
   };
 
   const handleInputChange = event => {
@@ -38,9 +35,7 @@ export default function Form() {
 
   const handleSubmite = event => {
     event.preventDefault();
-    addContact({ name: name, number: number });
-    setName('');
-    setNumber('');
+    addContact({ name: name, phone: number });
   };
 
   return (
@@ -68,7 +63,8 @@ export default function Form() {
             required
           />
         </label>
-        <button type="submit" className={s.button}>
+        <button type="submit" className={s.button} disabled={isLoading}>
+          {/* {isLoading && <LoaderDots />} */}
           Add contact
         </button>
       </form>
