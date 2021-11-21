@@ -8,7 +8,7 @@ export default function Contact({ contact }) {
 
   return (
     <li className={s.item}>
-      . {contact.name}: <span style={{ textAlign: 'right' }}>{contact.phone}</span>{' '}
+      {contact.name}: <span style={{ textAlign: 'right' }}>{contact.phone}</span>{' '}
       <button onClick={() => deleteContact(contact.id)} disabled={isDeleting}>
         Delete
       </button>
