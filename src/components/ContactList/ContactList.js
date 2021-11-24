@@ -1,24 +1,59 @@
-import { useSelector } from 'react-redux';
-import Contact from '../Contact';
-import { useFetchContactsQuery } from '../../redux/slice';
+import PropTypes from 'prop-types';
+import s from './Contact.module.css';
+import { useState } from 'react';                                                                 
 
-export default function ContactList() {
-  const { filter } = useSelector(state => state.contacts);
-  const { data } = useFetchContactsQuery();
+import { useDeleteContactMutation } from '../../redux/slice';
 
-  const getVisibleContacts = (allContacts, filter) => {
-    const normalizedFilter = filter.toLowerCase();
-    const visibleContacts = allContacts
-      ? allContacts.filter(contact => contact.name.toLowerCase().includes(normalizedFilter))
-      : [];
-    return visibleContacts;
-  };
+export default function Contact({ contact }) {
+  const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
+  const [edit, setEdit] = useState(null);                                                        
 
   return (
-    <ul>
-      {getVisibleContacts(data, filter).map(contact => (
-        <Contact key={contact.id} contact={contact} />
-      ))}
-    </ul>
+    <li className={s.item}> /////37 minutes
+      {edit === ?
+        <div>
+          <input />
+          <button>Save</button>
+          :
+          {contact.name}: <span style={{ textAlign: 'right' }}>{contact.phone}</span>{' '}
+        </div>
+      }
+      
+      <button onClick={() => editContact(contact.id)} disabled={isEditing}>
+        Edit
+      </button>                      
+      <button onClick={() => deleteContact(contact.id)} disabled={isDeleting}>
+        Delete
+      </button>
+    </li>
   );
 }
+
+Contact.propTypes = {
+  concact: PropTypes.string,
+};
+
+//--------------Without edit----------------------------------------------------------------
+
+// import PropTypes from 'prop-types';
+// import s from './Contact.module.css';
+
+// import { useDeleteContactMutation } from '../../redux/slice';
+
+// export default function Contact({ contact }) {
+//   const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
+
+//   return (
+//     <li className={s.item}>
+//       {contact.name}: <span style={{ textAlign: 'right' }}>{contact.phone}</span>{' '}
+//       <button onClick={() => deleteContact(contact.id)} disabled={isDeleting}>
+//         Delete
+//       </button>
+//     </li>
+//   );
+// }
+
+// Contact.propTypes = {
+//   concact: PropTypes.string,
+// };
+//---------------------------------------------------------------------------------------------
